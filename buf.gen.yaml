@@ -1,0 +1,32 @@
+version: v1
+
+plugins:
+  # --- Генерация Go структур ---
+  - name: go
+    out: ./generated
+    opt:
+      - paths=source_relative
+    strategy: directory
+
+  # --- Генерация gRPC серверов и клиентов ---
+  - name: go-grpc
+    out: ./generated
+    opt:
+      - paths=source_relative
+    strategy: directory
+
+  # --- Генерация grpc-gateway (REST proxy для gRPC) ---
+  - name: grpc-gateway
+    out: ./generated
+    opt:
+      - generate_unbound_methods=true
+      - logtostderr=true
+      - paths=source_relative
+    strategy: directory
+  # --- Генерация Swagger / OpenAPI ---
+  - name: openapiv2
+    out: ./docs/spec/swagger
+    opt:
+      - logtostderr=true
+      - generate_unbound_methods=true
+    strategy: directory

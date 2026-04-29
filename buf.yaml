@@ -1,0 +1,6 @@
+version: v1
+name: github.com/rk-dev/rk-demo
+
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/envoyproxy/protoc-gen-validate
