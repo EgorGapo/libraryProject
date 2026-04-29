@@ -13,9 +13,12 @@ func (s *Implementation) GetBookInfo(ctx context.Context, req *library.GetBookIn
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request is nil")
 	}
+	if err := validateUUID(req.Id); err != nil {
+		return nil, err
+	}
 	s.logger.Info("GetBookInfo called", zap.String("id", req.Id))
 
-	book, err := s.bookUseCase.GetBook(ctx, req.Id)
+	book, err := s.useCase.GetBook(ctx, req.Id)
 	if err != nil {
 		s.logger.Error("GetBookInfo failed", zap.String("id", req.Id), zap.Error(err))
 		return nil, toGRPCError(err)

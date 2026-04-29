@@ -15,7 +15,7 @@ func (s *Implementation) AddBook(ctx context.Context, req *library.AddBookReques
 	}
 	s.logger.Info("AddBook called", zap.String("name", req.Name))
 
-	book, err := s.bookUseCase.AddBook(ctx, req.Name, req.AuthorIds)
+	book, err := s.useCase.AddBook(ctx, req.Name, req.AuthorIds)
 	if err != nil {
 		s.logger.Error("AddBook failed", zap.Error(err))
 		return nil, toGRPCError(err)

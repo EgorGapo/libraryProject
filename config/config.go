@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 type (
 	Config struct {
 		GRPC
@@ -14,10 +16,17 @@ type (
 func NewConfig() (*Config, error) {
 	cfg := &Config{
 		GRPC{
-			Port:        "8080",
-			GatewayPort: "8081",
+			Port:        getEnv("GRPC_PORT", "8080"),
+			GatewayPort: getEnv("GRPC_GATEWAY_PORT", "8081"),
 		},
 	}
 
 	return cfg, nil
+}
+
+func getEnv(key, defaultValue string) string {
+	if val := os.Getenv(key); val != "" {
+		return val
+	}
+	return defaultValue
 }

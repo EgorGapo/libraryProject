@@ -7,17 +7,17 @@ import (
 )
 
 type Implementation struct {
-	logger      *zap.Logger
-	bookUseCase library.BookUseCase
+	logger  *zap.Logger
+	useCase library.LibraryUseCase
 	generated.UnimplementedLibraryServer
 }
 
 func New(
 	logger *zap.Logger,
-	booksUseCase library.BookUseCase,
+	useCase library.LibraryUseCase,
 ) *Implementation {
 	return &Implementation{
-		logger:      logger,
-		bookUseCase: booksUseCase,
+		logger:  logger,
+		useCase: useCase,
 	}
 }

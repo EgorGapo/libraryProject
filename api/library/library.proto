@@ -8,26 +8,51 @@ option go_package = "github.com/project/library/pkg/api/library;library";
 
 // Library provides methods to manage books and authors.
 service Library {
-  // post: "/v1/library/book"
-  rpc AddBook(AddBookRequest) returns (AddBookResponse) {}
-  
-  // put: "/v1/library/book"
-  rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse) {}
+  rpc AddBook(AddBookRequest) returns (AddBookResponse) {
+    option (google.api.http) = {
+      post: "/v1/library/book"
+      body: "*"
+    };
+  }
 
-  // get: "/v1/library/book/{id}"
-  rpc GetBookInfo(GetBookInfoRequest) returns (GetBookInfoResponse) {}
+  rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse) {
+    option (google.api.http) = {
+      put: "/v1/library/book"
+      body: "*"
+    };
+  }
 
-  // post: "/v1/library/author"
-  rpc RegisterAuthor(RegisterAuthorRequest) returns (RegisterAuthorResponse) {}
+  rpc GetBookInfo(GetBookInfoRequest) returns (GetBookInfoResponse) {
+    option (google.api.http) = {
+      get: "/v1/library/book/{id}"
+    };
+  }
 
-  // put: "/v1/library/author"
-  rpc ChangeAuthorInfo(ChangeAuthorInfoRequest) returns (ChangeAuthorInfoResponse) {}
+  rpc RegisterAuthor(RegisterAuthorRequest) returns (RegisterAuthorResponse) {
+    option (google.api.http) = {
+      post: "/v1/library/author"
+      body: "*"
+    };
+  }
 
-  // get: "/v1/library/author/{id}"
-  rpc GetAuthorInfo(GetAuthorInfoRequest) returns (GetAuthorInfoResponse) {}
+  rpc ChangeAuthorInfo(ChangeAuthorInfoRequest) returns (ChangeAuthorInfoResponse) {
+    option (google.api.http) = {
+      put: "/v1/library/author"
+      body: "*"
+    };
+  }
 
-  // get: "/v1/library/author_books/{author_id}"
-  rpc GetAuthorBooks(GetAuthorBooksRequest) returns (stream Book) {}
+  rpc GetAuthorInfo(GetAuthorInfoRequest) returns (GetAuthorInfoResponse) {
+    option (google.api.http) = {
+      get: "/v1/library/author/{id}"
+    };
+  }
+
+  rpc GetAuthorBooks(GetAuthorBooksRequest) returns (stream Book) {
+    option (google.api.http) = {
+      get: "/v1/library/author_books/{author_id}"
+    };
+  }
 }
 
 message Book {

@@ -13,8 +13,11 @@ func (s *Implementation) UpdateBook(ctx context.Context, req *library.UpdateBook
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request is nil")
 	}
+	if err := validateUUID(req.Id); err != nil {
+		return nil, err
+	}
 	s.logger.Info("UpdateBook called", zap.String("id", req.Id))
-	_, err := s.bookUseCase.UpdateBook(ctx, req.Id, req.Name, req.AuthorIds)
+	_, err := s.useCase.UpdateBook(ctx, req.Id, req.Name, req.AuthorIds)
 	if err != nil {
 		s.logger.Error("UpdateBook failed", zap.String("id", req.Id), zap.Error(err))
 		return nil, toGRPCError(err)

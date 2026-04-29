@@ -10,34 +10,34 @@ import (
 	"go.uber.org/zap"
 )
 
-type BookUseCaseImp struct {
+type LibraryImpl struct {
 	storage repository.StorageInterface
 	logger  *zap.Logger
 }
 
-func New(storage repository.StorageInterface, logger *zap.Logger) *BookUseCaseImp {
-	return &BookUseCaseImp{
+func New(storage repository.StorageInterface, logger *zap.Logger) *LibraryImpl {
+	return &LibraryImpl{
 		storage: storage,
 		logger:  logger,
 	}
 }
 
-func (s *BookUseCaseImp) AddBook(ctx context.Context, bookName string, aithorIds []string) (*entity.Book, error) {
+func (s *LibraryImpl) AddBook(ctx context.Context, bookName string, authorIds []string) (*entity.Book, error) {
 	book := &entity.Book{
 		ID:        uuid.New().String(),
 		Name:      bookName,
-		AuthorIDs: aithorIds,
+		AuthorIDs: authorIds,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 	return s.storage.AddBook(book)
 }
 
-func (s *BookUseCaseImp) GetBook(ctx context.Context, ID string) (*entity.Book, error) {
+func (s *LibraryImpl) GetBook(ctx context.Context, ID string) (*entity.Book, error) {
 	return s.storage.GetBook(ID)
 }
 
-func (s *BookUseCaseImp) UpdateBook(ctx context.Context, id, name string, authorIDs []string) (*entity.Book, error) {
+func (s *LibraryImpl) UpdateBook(ctx context.Context, id, name string, authorIDs []string) (*entity.Book, error) {
 	book := &entity.Book{
 		ID:        id,
 		Name:      name,

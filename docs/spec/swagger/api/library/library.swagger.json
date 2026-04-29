@@ -4,6 +4,7 @@
     "title": "api/library/library.proto",
     "version": "version not set"
   },
+  "host": "localhost:8081",
   "tags": [
     {
       "name": "Library"
@@ -16,15 +17,14 @@
     "application/json"
   ],
   "paths": {
-    "/library.Library/AddBook": {
+    "/v1/library/author": {
       "post": {
-        "summary": "post: \"/v1/library/book\"",
-        "operationId": "Library_AddBook",
+        "operationId": "Library_RegisterAuthor",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/libraryAddBookResponse"
+              "$ref": "#/definitions/libraryRegisterAuthorResponse"
             }
           },
           "default": {
@@ -40,18 +40,15 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/libraryAddBookRequest"
+              "$ref": "#/definitions/libraryRegisterAuthorRequest"
             }
           }
         ],
         "tags": [
           "Library"
         ]
-      }
-    },
-    "/library.Library/ChangeAuthorInfo": {
-      "post": {
-        "summary": "put: \"/v1/library/author\"",
+      },
+      "put": {
         "operationId": "Library_ChangeAuthorInfo",
         "responses": {
           "200": {
@@ -82,9 +79,38 @@
         ]
       }
     },
-    "/library.Library/GetAuthorBooks": {
-      "post": {
-        "summary": "get: \"/v1/library/author_books/{author_id}\"",
+    "/v1/library/author/{id}": {
+      "get": {
+        "operationId": "Library_GetAuthorInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/libraryGetAuthorInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Library"
+        ]
+      }
+    },
+    "/v1/library/author_books/{authorId}": {
+      "get": {
         "operationId": "Library_GetAuthorBooks",
         "responses": {
           "200": {
@@ -111,12 +137,10 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "authorId",
+            "in": "path",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/libraryGetAuthorBooksRequest"
-            }
+            "type": "string"
           }
         ],
         "tags": [
@@ -124,15 +148,14 @@
         ]
       }
     },
-    "/library.Library/GetAuthorInfo": {
+    "/v1/library/book": {
       "post": {
-        "summary": "get: \"/v1/library/author/{id}\"",
-        "operationId": "Library_GetAuthorInfo",
+        "operationId": "Library_AddBook",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/libraryGetAuthorInfoResponse"
+              "$ref": "#/definitions/libraryAddBookResponse"
             }
           },
           "default": {
@@ -148,84 +171,15 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/libraryGetAuthorInfoRequest"
+              "$ref": "#/definitions/libraryAddBookRequest"
             }
           }
         ],
         "tags": [
           "Library"
         ]
-      }
-    },
-    "/library.Library/GetBookInfo": {
-      "post": {
-        "summary": "get: \"/v1/library/book/{id}\"",
-        "operationId": "Library_GetBookInfo",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/libraryGetBookInfoResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/libraryGetBookInfoRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Library"
-        ]
-      }
-    },
-    "/library.Library/RegisterAuthor": {
-      "post": {
-        "summary": "post: \"/v1/library/author\"",
-        "operationId": "Library_RegisterAuthor",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/libraryRegisterAuthorResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/libraryRegisterAuthorRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Library"
-        ]
-      }
-    },
-    "/library.Library/UpdateBook": {
-      "post": {
-        "summary": "put: \"/v1/library/book\"",
+      },
+      "put": {
         "operationId": "Library_UpdateBook",
         "responses": {
           "200": {
@@ -249,6 +203,36 @@
             "schema": {
               "$ref": "#/definitions/libraryUpdateBookRequest"
             }
+          }
+        ],
+        "tags": [
+          "Library"
+        ]
+      }
+    },
+    "/v1/library/book/{id}": {
+      "get": {
+        "operationId": "Library_GetBookInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/libraryGetBookInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -311,22 +295,6 @@
     "libraryChangeAuthorInfoResponse": {
       "type": "object"
     },
-    "libraryGetAuthorBooksRequest": {
-      "type": "object",
-      "properties": {
-        "authorId": {
-          "type": "string"
-        }
-      }
-    },
-    "libraryGetAuthorInfoRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        }
-      }
-    },
     "libraryGetAuthorInfoResponse": {
       "type": "object",
       "properties": {
@@ -334,14 +302,6 @@
           "type": "string"
         },
         "name": {
-          "type": "string"
-        }
-      }
-    },
-    "libraryGetBookInfoRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
           "type": "string"
         }
       }
