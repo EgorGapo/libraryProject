@@ -1,21 +1,19 @@
 package library
 
 import (
-	"errors"
 	"regexp"
+
+	"github.com/project/library/internal/entity"
 )
 
-var (
-	ErrInvalidAuthorName = errors.New("invalid author name")
-	authorNameRegexp     = regexp.MustCompile(`^[\p{L}\d ]+$`)
-)
+var authorNameRegexp = regexp.MustCompile(`^[\p{L}\d ]+$`)
 
 func validateAuthorName(name string) error {
 	if len(name) == 0 || len(name) >= 1024 {
-		return ErrInvalidAuthorName
+		return entity.ErrInvalidAuthorName
 	}
 	if !authorNameRegexp.MatchString(name) {
-		return ErrInvalidAuthorName
+		return entity.ErrInvalidAuthorName
 	}
 	return nil
 }

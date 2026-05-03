@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"slices"
 	"sync"
 	"time"
@@ -10,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type Storage struct {
+type storage struct {
 	books       map[string]*entity.Book
 	authors     map[string]*entity.Author
 	authorBooks map[string][]string
@@ -18,8 +17,8 @@ type Storage struct {
 	mu          sync.RWMutex
 }
 
-func New(logger *zap.Logger) *Storage {
-	return &Storage{
+func New(logger *zap.Logger) *storage {
+	return &storage{
 		books:       make(map[string]*entity.Book),
 		authors:     make(map[string]*entity.Author),
 		authorBooks: make(map[string][]string),
@@ -27,13 +26,13 @@ func New(logger *zap.Logger) *Storage {
 	}
 }
 
-func (s *Storage) AddBook(book *entity.Book) (*entity.Book, error) {
+func (s *storage) AddBook(book *entity.Book) (*entity.Book, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	for _, authorID := range book.AuthorIDs {
 		if _, ok := s.authors[authorID]; !ok {
-			return nil, ErrAuthorNotFound
+			return nil, entity.ErrAuthorNotFound
 		}
 	}
 
@@ -47,28 +46,28 @@ func (s *Storage) AddBook(book *entity.Book) (*entity.Book, error) {
 	return book, nil
 }
 
-func (s *Storage) GetBook(ID string) (*entity.Book, error) {
+func (s *storage) GetBook(ID string) (*entity.Book, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	val, ok := s.books[ID]
 	if !ok {
-		return nil, ErrBookNotFound
+		return nil, entity.ErrBookNotFound
 	}
 	return val, nil
 }
 
-func (s *Storage) UpdateBook(book *entity.Book) (*entity.Book, error) {
+func (s *storage) UpdateBook(book *entity.Book) (*entity.Book, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	val, ok := s.books[book.ID]
 	if !ok {
-		return nil, ErrBookNotFound
+		return nil, entity.ErrBookNotFound
 	}
 
 	for _, authorID := range book.AuthorIDs {
 		if _, ok := s.authors[authorID]; !ok {
-			return nil, ErrAuthorNotFound
+			return nil, entity.ErrAuthorNotFound
 		}
 	}
 
@@ -107,7 +106,7 @@ func (s *Storage) UpdateBook(book *entity.Book) (*entity.Book, error) {
 	return val, nil
 }
 
-func (s *Storage) RegisterAuthor(author *entity.Author) (*entity.Author, error) {
+func (s *storage) RegisterAuthor(author *entity.Author) (*entity.Author, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.authors[author.ID] = author
@@ -115,22 +114,22 @@ func (s *Storage) RegisterAuthor(author *entity.Author) (*entity.Author, error) 
 	return author, nil
 }
 
-func (s *Storage) GetAuthor(ID string) (*entity.Author, error) {
+func (s *storage) GetAuthor(ID string) (*entity.Author, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	val, ok := s.authors[ID]
 	if !ok {
-		return nil, ErrAuthorNotFound
+		return nil, entity.ErrAuthorNotFound
 	}
 	return val, nil
 }
 
-func (s *Storage) UpdateAuthor(author *entity.Author) (*entity.Author, error) {
+func (s *storage) UpdateAuthor(author *entity.Author) (*entity.Author, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	val, ok := s.authors[author.ID]
 	if !ok {
-		return nil, ErrAuthorNotFound
+		return nil, entity.ErrAuthorNotFound
 	}
 	val.Name = author.Name
 	val.UpdatedAt = time.Now()
@@ -138,11 +137,11 @@ func (s *Storage) UpdateAuthor(author *entity.Author) (*entity.Author, error) {
 	return val, nil
 }
 
-func (s *Storage) GetAuthorBooks(ID string) ([]*entity.Book, error) {
+func (s *storage) GetAuthorBooks(ID string) ([]*entity.Book, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	if _, ok := s.authors[ID]; !ok {
-		return nil, ErrAuthorNotFound
+		return nil, entity.ErrAuthorNotFound
 	}
 	bookIDs := s.authorBooks[ID]
 	result := make([]*entity.Book, 0, len(bookIDs))
@@ -151,6 +150,3 @@ func (s *Storage) GetAuthorBooks(ID string) ([]*entity.Book, error) {
 	}
 	return result, nil
 }
-
-var ErrBookNotFound = errors.New("book not found")
-var ErrAuthorNotFound = errors.New("author not found")
