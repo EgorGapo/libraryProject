@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Implementation) GetAuthorBooks(req *library.GetAuthorBooksRequest, stream grpc.ServerStreamingServer[library.Book]) error {
@@ -26,9 +27,11 @@ func (s *Implementation) GetAuthorBooks(req *library.GetAuthorBooksRequest, stre
 
 	for _, book := range books {
 		if err := stream.Send(&library.Book{
-			Id:       book.ID,
-			Name:     book.Name,
-			AuthorId: book.AuthorIDs,
+			Id:        book.ID,
+			Name:      book.Name,
+			AuthorId:  book.AuthorIDs,
+			CreatedAt: timestamppb.New(book.CreatedAt),
+			UpdatedAt: timestamppb.New(book.UpdatedAt),
 		}); err != nil {
 			return err
 		}

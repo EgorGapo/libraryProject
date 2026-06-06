@@ -2,7 +2,6 @@ package library
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/project/library/internal/entity"
@@ -27,14 +26,12 @@ func (s *LibraryImpl) AddBook(ctx context.Context, bookName string, authorIds []
 		ID:        uuid.New().String(),
 		Name:      bookName,
 		AuthorIDs: authorIds,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
 	}
-	return s.storage.AddBook(book)
+	return s.storage.AddBook(ctx, book)
 }
 
 func (s *LibraryImpl) GetBook(ctx context.Context, ID string) (*entity.Book, error) {
-	return s.storage.GetBook(ID)
+	return s.storage.GetBook(ctx, ID)
 }
 
 func (s *LibraryImpl) UpdateBook(ctx context.Context, id, name string, authorIDs []string) (*entity.Book, error) {
@@ -43,5 +40,5 @@ func (s *LibraryImpl) UpdateBook(ctx context.Context, id, name string, authorIDs
 		Name:      name,
 		AuthorIDs: authorIDs,
 	}
-	return s.storage.UpdateBook(book)
+	return s.storage.UpdateBook(ctx, book)
 }

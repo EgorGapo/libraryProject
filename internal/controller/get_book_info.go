@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Implementation) GetBookInfo(ctx context.Context, req *library.GetBookInfoRequest) (*library.GetBookInfoResponse, error) {
@@ -24,8 +25,10 @@ func (s *Implementation) GetBookInfo(ctx context.Context, req *library.GetBookIn
 		return nil, toGRPCError(err)
 	}
 	return &library.GetBookInfoResponse{Book: &library.Book{
-		Id:       book.ID,
-		Name:     book.Name,
-		AuthorId: book.AuthorIDs,
+		Id:        book.ID,
+		Name:      book.Name,
+		AuthorId:  book.AuthorIDs,
+		CreatedAt: timestamppb.New(book.CreatedAt),
+		UpdatedAt: timestamppb.New(book.UpdatedAt),
 	}}, nil
 }

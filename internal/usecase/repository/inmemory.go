@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"slices"
 	"sync"
 	"time"
@@ -26,7 +27,7 @@ func New(logger *zap.Logger) *storage {
 	}
 }
 
-func (s *storage) AddBook(book *entity.Book) (*entity.Book, error) {
+func (s *storage) AddBook(_ context.Context, book *entity.Book) (*entity.Book, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -46,7 +47,7 @@ func (s *storage) AddBook(book *entity.Book) (*entity.Book, error) {
 	return book, nil
 }
 
-func (s *storage) GetBook(ID string) (*entity.Book, error) {
+func (s *storage) GetBook(_ context.Context, ID string) (*entity.Book, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	val, ok := s.books[ID]
@@ -56,7 +57,7 @@ func (s *storage) GetBook(ID string) (*entity.Book, error) {
 	return val, nil
 }
 
-func (s *storage) UpdateBook(book *entity.Book) (*entity.Book, error) {
+func (s *storage) UpdateBook(_ context.Context, book *entity.Book) (*entity.Book, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -106,7 +107,7 @@ func (s *storage) UpdateBook(book *entity.Book) (*entity.Book, error) {
 	return val, nil
 }
 
-func (s *storage) RegisterAuthor(author *entity.Author) (*entity.Author, error) {
+func (s *storage) RegisterAuthor(_ context.Context, author *entity.Author) (*entity.Author, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.authors[author.ID] = author
@@ -114,7 +115,7 @@ func (s *storage) RegisterAuthor(author *entity.Author) (*entity.Author, error) 
 	return author, nil
 }
 
-func (s *storage) GetAuthor(ID string) (*entity.Author, error) {
+func (s *storage) GetAuthor(_ context.Context, ID string) (*entity.Author, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	val, ok := s.authors[ID]
@@ -124,7 +125,7 @@ func (s *storage) GetAuthor(ID string) (*entity.Author, error) {
 	return val, nil
 }
 
-func (s *storage) UpdateAuthor(author *entity.Author) (*entity.Author, error) {
+func (s *storage) UpdateAuthor(_ context.Context, author *entity.Author) (*entity.Author, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	val, ok := s.authors[author.ID]
@@ -137,7 +138,7 @@ func (s *storage) UpdateAuthor(author *entity.Author) (*entity.Author, error) {
 	return val, nil
 }
 
-func (s *storage) GetAuthorBooks(ID string) ([]*entity.Book, error) {
+func (s *storage) GetAuthorBooks(_ context.Context, ID string) ([]*entity.Book, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	if _, ok := s.authors[ID]; !ok {
