@@ -32,16 +32,15 @@
 Проект построен по принципам чистой архитектуры (на основе [go-clean-template](https://github.com/evrone/go-clean-template)): транспортный слой, доменная логика (use cases) и репозитории разделены и зависят через интерфейсы. Это позволяет подменять реализацию хранилища и покрывать логику тестами с моками.
 
 ```
-cmd/            — точка входа, сборка и запуск серверов
-config/         — конфигурация из переменных окружения
-internal/
-  controller/   — gRPC-хендлеры
-  usecase/      — доменная логика, транзакции
-  repository/   — работа с PostgreSQL
-  entity/       — доменные модели
-db/migrations/  — SQL-миграции и их применение (go:embed)
-pkg/api/library — сгенерированный код gRPC/gateway
-integration-test/ — интеграционные тесты
+cmd/library        — точка входа
+internal/app       — сборка зависимостей, запуск gRPC и HTTP-gateway, graceful shutdown
+internal/controller— gRPC-хендлеры (адаптация proto ↔ домен)
+internal/usecase   — бизнес-логика и валидация
+internal/usecase/repository — интерфейс хранилища + реализации (in-memory, postgres)
+internal/entity    — доменные сущности и ошибки
+db/migrations      — SQL-миграции (goose)
+api/library        — proto-схема API
+config             — конфигурация из env
 ```
 
 ## API
@@ -141,6 +140,4 @@ make build    # сборка
 
 Доменная логика покрыта юнит-тестами с использованием сгенерированных моков; интеграционные тесты проверяют сервис целиком, включая работу с базой данных. Тесты лежат в `integration-test/`.
 
-## Лицензия
 
-MIT
